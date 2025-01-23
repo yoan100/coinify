@@ -149,68 +149,81 @@
             });
         }
 
-        function showReportAbuseForm() {
-            Swal.fire({
-                title: 'Report Abuse',
-                html: `
-                    <label for="server-id">Enter your server ID:</label><br>
-                    <input type="text" id="server-id" class="swal2-input"><br>
+       function showReportAbuseForm() {
+    Swal.fire({
+        title: 'Report Abuse',
+        html: `
+            <label for="server-id">Enter your server ID:</label><br>
+            <input type="text" id="server-id" class="swal2-input"><br>
 
-                    <label for="username">Username of abuser:</label><br>
-                    <input type="text" id="username" class="swal2-input"><br>
+            <label for="username">Username of abuser:</label><br>
+            <input type="text" id="username" class="swal2-input"><br>
 
-                    <label for="abuse-type">What abuse are they doing?</label><br>
-                    <select id="abuse-type" class="swal2-select">
-                        <option value="cheats">Cheats/Exploits</option>
-                        <option value="inappropriate">Inappropriate Behaviour</option>
-                        <option value="other">Other</option>
-                    </select><br>
+            <label for="abuse-type">What abuse are they doing?</label><br>
+            <select id="abuse-type" class="swal2-select">
+                <option value="cheats">Cheats/Exploits</option>
+                <option value="inappropriate">Inappropriate Behaviour</option>
+                <option value="other">Other</option>
+            </select><br>
 
-                    <div id="other-reason-container" style="display: none;">
-                        <label for="other-reason">Please specify:</label><br>
-                        <input type="text" id="other-reason" class="swal2-input"><br>
-                    </div>
+            <div id="other-reason-container" style="display: none;">
+                <label for="other-reason">Please specify:</label><br>
+                <input type="text" id="other-reason" class="swal2-input"><br>
+            </div>
 
-                    <p class="red-glowing-text">
-                        Provide Evidence: VIDEOS AND PHOTOS SHOULD BE MADE INTO URL ADDRESSES! Click <a href="https://yoan100.github.io/coinify/evidence" target="_blank">here</a> for more info.
-                    </p>
+            <p class="red-glowing-text">
+                Provide Evidence: VIDEOS AND PHOTOS SHOULD BE MADE INTO URL ADDRESSES! Click <a href="https://mm2serverfinder.neocities.org/evidence" target="_blank">here</a> for more info.
+            </p>
 
-                    <label for="situation">Explain the situation:</label><br>
-                    <textarea id="situation" class="swal2-textarea"></textarea>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Submit',
-                preConfirm: () => {
-                    const serverId = document.getElementById('server-id').value;
-                    const username = document.getElementById('username').value;
-                    const abuseType = document.getElementById('abuse-type').value;
-                    const otherReason = abuseType === 'other' ? document.getElementById('other-reason').value : '';
-                    const situation = document.getElementById('situation').value;
+            <label for="situation">Explain the situation:</label><br>
+            <textarea id="situation" class="swal2-textarea"></textarea>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        preConfirm: () => {
+            const serverId = document.getElementById('server-id').value;
+            const username = document.getElementById('username').value;
+            const abuseType = document.getElementById('abuse-type').value;
+            const otherReason = abuseType === 'other' ? document.getElementById('other-reason').value : '';
+            const situation = document.getElementById('situation').value;
 
-                    if (!serverId || !username || !abuseType || (abuseType === 'other' && !otherReason) || !situation) {
-                        Swal.showValidationMessage('Please fill in all required fields.');
-                        return false;
-                    }
+            if (!serverId || !username || !abuseType || (abuseType === 'other' && !otherReason) || !situation) {
+                Swal.showValidationMessage('Please fill in all required fields.');
+                return false;
+            }
 
-                    return { serverId, username, abuseType, otherReason, situation };
-                }
-            }).then(result => {
-                if (result.isConfirmed) {
-                    console.log('Report submitted:', result.value);
-                    Swal.fire('Thank you!', 'Your report has been submitted.', 'success');
-                }
-            });
-
-            const abuseTypeElement = document.getElementById('abuse-type');
-            abuseTypeElement.addEventListener('change', () => {
-                const otherReasonContainer = document.getElementById('other-reason-container');
-                if (abuseTypeElement.value === 'other') {
-                    otherReasonContainer.style.display = 'block';
-                } else {
-                    otherReasonContainer.style.display = 'none';
-                }
+            return { serverId, username, abuseType, otherReason, situation };
+        }
+    }).then(result => {
+        if (result.isConfirmed) {
+            // Send data to Discord webhook
+            fetch("https://discord.com/api/webhooks/1331911176615100508/CXjUKwfaScecA6EQoscA0aSf0lU0XSPtd410-sqTRJvCSYQn031HPyG4p_U9HiK2Waax", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    content: `**Abuse Report**\n**Server ID:** ${result.value.serverId}\n**Abuser Username:** ${result.value.username}\n**Abuse Type:** ${result.value.abuseType}\n${result.value.abuseType === 'other' ? `**Other Reason:** ${result.value.otherReason}` : ''}\n**Evidence/Situation:** ${result.value.situation}`
+                })
+            }).then(() => {
+                Swal.fire('Thank you!', 'Your report has been submitted.', 'success');
+            }).catch(error => {
+                console.error('Error submitting to Discord:', error);
+                Swal.fire('Error!', 'There was a problem submitting your report. Please try again later.', 'error');
             });
         }
+    });
+
+    const abuseTypeElement = document.getElementById('abuse-type');
+    abuseTypeElement.addEventListener('change', () => {
+        const otherReasonContainer = document.getElementById('other-reason-container');
+        if (abuseTypeElement.value === 'other') {
+            otherReasonContainer.style.display = 'block';
+        } else {
+            otherReasonContainer.style.display = 'none';
+        }
+    });
+}
     </script>
 </body>
 </html>
