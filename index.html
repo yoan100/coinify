@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coinify</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('https://cdn.esportsdriven.com/media/upload/images/tips_and_tricksRoblox_Murder_Mystery_2.large.webp') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-align: center;
+        }
+
+        #captcha-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #captcha-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        #captcha-container h1 {
+            font-size: 2rem;
+            color: black;
+            margin-bottom: 10px;
+        }
+
+        #captcha-container p {
+            font-size: 1rem;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .button {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .green-button {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .red-button {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .blue-button {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .white-button {
+            background-color: #ffffff;
+            color: black;
+            border: 1px solid #ccc;
+        }
+
+        .button:active {
+            transform: scale(0.95);
+        }
+
+        .red-glowing-text {
+            color: red;
+            font-weight: bold;
+            text-shadow: 0 0 10px red;
+        }
+
+        .red-glowing-text a {
+            color: red;
+            text-decoration: underline;
+        }
+
+        .home-title {
+            color: black;
+            text-shadow: none;
+        }
+
+        .home-description {
+            color: black;
+            text-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="captcha-overlay">
+        <div id="captcha-container">
+            <h1>Wait!</h1>
+            <p>Before we can let you to this website, please prove you are a human!</p>
+            <div class="h-captcha" data-sitekey="971ceace-d8b6-4cea-9d4e-d6c2c494564a" data-callback="onCaptchaSuccess"></div>
+        </div>
+    </div>
+
+    <h1 class="home-title">Find Me a Coin Farm Server</h1>
+    <p class="home-description">Find servers to farm coins in Murder Mystery 2 with ease<br>Created by @Yoan</p>
+
+    <div class="button-container">
+        <button class="button green-button">Find A Server</button>
+        <button class="button red-button" onclick="showReportAbuseForm()">Report Abuse</button>
+        <button class="button blue-button" onclick="window.location.href='https://discord.gg/peQyunjzRJ';">Discord Server</button>
+        <button class="button white-button" onclick="showStatusPopup()">Status</button>
+    </div>
+
+    <script>
+        function onCaptchaSuccess(token) {
+            // Hide the overlay and show the main content
+            document.getElementById('captcha-overlay').style.display = 'none';
+            console.log('Captcha solved! Token:', token);
+        }
+
+        function showStatusPopup() {
+            Swal.fire({
+                title: 'Server Status',
+                text: 'All systems are operational.',
+                icon: 'info',
+                confirmButtonText: 'Close'
+            });
+        }
+
+        function showReportAbuseForm() {
+            Swal.fire({
+                title: 'Report Abuse',
+                html: `
+                    <label for="server-id">Enter your server ID:</label><br>
+                    <input type="text" id="server-id" class="swal2-input"><br>
+
+                    <label for="username">Username of abuser:</label><br>
+                    <input type="text" id="username" class="swal2-input"><br>
+
+                    <label for="abuse-type">What abuse are they doing?</label><br>
+                    <select id="abuse-type" class="swal2-select">
+                        <option value="cheats">Cheats/Exploits</option>
+                        <option value="inappropriate">Inappropriate Behaviour</option>
+                        <option value="other">Other</option>
+                    </select><br>
+
+                    <div id="other-reason-container" style="display: none;">
+                        <label for="other-reason">Please specify:</label><br>
+                        <input type="text" id="other-reason" class="swal2-input"><br>
+                    </div>
+
+                    <p class="red-glowing-text">
+                        Provide Evidence: VIDEOS AND PHOTOS SHOULD BE MADE INTO URL ADDRESSES! Click <a href="https://yoan100.github.io/coinify/evidence" target="_blank">here</a> for more info.
+                    </p>
+
+                    <label for="situation">Explain the situation:</label><br>
+                    <textarea id="situation" class="swal2-textarea"></textarea>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                preConfirm: () => {
+                    const serverId = document.getElementById('server-id').value;
+                    const username = document.getElementById('username').value;
+                    const abuseType = document.getElementById('abuse-type').value;
+                    const otherReason = abuseType === 'other' ? document.getElementById('other-reason').value : '';
+                    const situation = document.getElementById('situation').value;
+
+                    if (!serverId || !username || !abuseType || (abuseType === 'other' && !otherReason) || !situation) {
+                        Swal.showValidationMessage('Please fill in all required fields.');
+                        return false;
+                    }
+
+                    return { serverId, username, abuseType, otherReason, situation };
+                }
+            }).then(result => {
+                if (result.isConfirmed) {
+                    console.log('Report submitted:', result.value);
+                    Swal.fire('Thank you!', 'Your report has been submitted.', 'success');
+                }
+            });
+
+            const abuseTypeElement = document.getElementById('abuse-type');
+            abuseTypeElement.addEventListener('change', () => {
+                const otherReasonContainer = document.getElementById('other-reason-container');
+                if (abuseTypeElement.value === 'other') {
+                    otherReasonContainer.style.display = 'block';
+                } else {
+                    otherReasonContainer.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
