@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coinify</title>
+    <title>Find Me a Coin Farm Server</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <style>
@@ -72,11 +72,6 @@
             color: white;
         }
 
-        .red-button {
-            background-color: #dc3545;
-            color: white;
-        }
-
         .blue-button {
             background-color: #007bff;
             color: white;
@@ -90,17 +85,6 @@
 
         .button:active {
             transform: scale(0.95);
-        }
-
-        .red-glowing-text {
-            color: red;
-            font-weight: bold;
-            text-shadow: 0 0 10px red;
-        }
-
-        .red-glowing-text a {
-            color: red;
-            text-decoration: underline;
         }
 
         .home-title {
@@ -119,7 +103,7 @@
         <div id="captcha-container">
             <h1>Wait!</h1>
             <p>Before we can let you to this website, please prove you are a human!</p>
-            <div class="h-captcha" data-sitekey="971ceace-d8b6-4cea-9d4e-d6c2c494564a" data-callback="onCaptchaSuccess"></div>
+            <div class="h-captcha" data-sitekey="YOUR_HCAPTCHA_SITE_KEY" data-callback="onCaptchaSuccess"></div>
         </div>
     </div>
 
@@ -127,8 +111,7 @@
     <p class="home-description">Find servers to farm coins in Murder Mystery 2 with ease<br>Created by @Yoan</p>
 
     <div class="button-container">
-        <button class="button green-button">Find A Server</button>
-        <button class="button red-button" onclick="showReportAbuseForm()">Report Abuse</button>
+        <button class="button green-button" onclick="findServer()">Find A Server</button>
         <button class="button blue-button" onclick="window.location.href='https://discord.gg/peQyunjzRJ';">Discord Server</button>
         <button class="button white-button" onclick="showStatusPopup()">Status</button>
     </div>
@@ -149,81 +132,15 @@
             });
         }
 
-       function showReportAbuseForm() {
-    Swal.fire({
-        title: 'Report Abuse',
-        html: `
-            <label for="server-id">Enter your server ID:</label><br>
-            <input type="text" id="server-id" class="swal2-input"><br>
-
-            <label for="username">Username of abuser:</label><br>
-            <input type="text" id="username" class="swal2-input"><br>
-
-            <label for="abuse-type">What abuse are they doing?</label><br>
-            <select id="abuse-type" class="swal2-select">
-                <option value="cheats">Cheats/Exploits</option>
-                <option value="inappropriate">Inappropriate Behaviour</option>
-                <option value="other">Other</option>
-            </select><br>
-
-            <div id="other-reason-container" style="display: none;">
-                <label for="other-reason">Please specify:</label><br>
-                <input type="text" id="other-reason" class="swal2-input"><br>
-            </div>
-
-            <p class="red-glowing-text">
-                Provide Evidence: VIDEOS AND PHOTOS SHOULD BE MADE INTO URL ADDRESSES! Click <a href="https://mm2serverfinder.neocities.org/evidence" target="_blank">here</a> for more info.
-            </p>
-
-            <label for="situation">Explain the situation and put your evidence here:</label><br>
-            <textarea id="situation" class="swal2-textarea"></textarea>
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Submit',
-        preConfirm: () => {
-            const serverId = document.getElementById('server-id').value;
-            const username = document.getElementById('username').value;
-            const abuseType = document.getElementById('abuse-type').value;
-            const otherReason = abuseType === 'other' ? document.getElementById('other-reason').value : '';
-            const situation = document.getElementById('situation').value;
-
-            if (!serverId || !username || !abuseType || (abuseType === 'other' && !otherReason) || !situation) {
-                Swal.showValidationMessage('Please fill in all required fields.');
-                return false;
-            }
-
-            return { serverId, username, abuseType, otherReason, situation };
-        }
-    }).then(result => {
-        if (result.isConfirmed) {
-            // Send data to Discord webhook
-            fetch("https://discord.com/api/webhooks/1331911176615100508/CXjUKwfaScecA6EQoscA0aSf0lU0XSPtd410-sqTRJvCSYQn031HPyG4p_U9HiK2Waax", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    content: `**Abuse Report**\n**Server ID:** ${result.value.serverId}\n**Abuser Username:** ${result.value.username}\n**Abuse Type:** ${result.value.abuseType}\n${result.value.abuseType === 'other' ? `**Other Reason:** ${result.value.otherReason}` : ''}\n**Evidence/Situation:** ${result.value.situation}`
-                })
-            }).then(() => {
-                Swal.fire('Thank you!', 'Your report has been submitted.', 'success');
-            }).catch(error => {
-                console.error('Error submitting to Discord:', error);
-                Swal.fire('Error!', 'There was a problem submitting your report. Please try again later.', 'error');
+        function findServer() {
+            Swal.fire({
+                title: 'Searching for Servers',
+                text: 'Looking for servers with 3-4 players...',
+                icon: 'info',
+                confirmButtonText: 'Close'
             });
+            // Server search logic placeholder
         }
-    });
-
-    const abuseTypeElement = document.getElementById('abuse-type');
-    abuseTypeElement.addEventListener('change', () => {
-        const otherReasonContainer = document.getElementById('other-reason-container');
-        if (abuseTypeElement.value === 'other') {
-            otherReasonContainer.style.display = 'block';
-        } else {
-            otherReasonContainer.style.display = 'none';
-        }
-    });
-}
     </script>
 </body>
 </html>
